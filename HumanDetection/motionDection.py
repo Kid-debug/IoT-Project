@@ -77,7 +77,7 @@ while True:
         if output is None:
             # use new path for saving video
             dt_string = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
-            path = "detect_%s.avi" % dt_string
+            path = "CCTVVideo/detect_%s.avi" % dt_string
             output = cv2.VideoWriter(path, fourcc, 10.0, (640, 480))
             print("new recording")
         output.write(frame)
