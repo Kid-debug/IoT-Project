@@ -7,7 +7,7 @@ with open('yolov3_classes.txt', 'r') as f:
     classes = [line.strip() for line in f.readlines()]
 output_layers = [net.getLayerNames()[i - 1] for i in net.getUnconnectedOutLayers()]
 
-cap = cv2.VideoCapture("")
+cap = cv2.VideoCapture(0)
 
 while True:
     ret, frame = cap.read()
