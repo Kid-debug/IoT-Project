@@ -32,6 +32,7 @@ def control_buzzer(value):
             digitalWrite(buzzer, 0)
 
 while True:
+    motion=db.child("Motion").get().val()
     try:
         sleep(0.5)
         distance = ultrasonicRead(ultrasonic)
@@ -40,12 +41,17 @@ while True:
         if distance <= 50:
             filename = "images/{}.jpg".format(int(time.time()))                                       
             cv2.imwrite(filename,frame)                              
-            control_buzzer(1)
+            control_buzzer(motion["Alarm"])
+            Motion={
+                "Detect" : 1,
+                "Alarm" : 1
+                }
+            results = db.child("Motion").set(Motion)
         else:
-            control_buzzer(0)
-        results = db.child("Motion").set({'Detect':1})
+            control_buzzer(motion["Alarm"])
+           
     except KeyboardInterrupt :
-        control_buzzer(False)
+        control_buzzer(motion["Alarm"])
         break
     except TypeError:
         print("Type Error occurs")
