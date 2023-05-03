@@ -33,11 +33,23 @@ def control_buzzer(value):
 
 while True:
     motion=db.child("Motion").get().val()
+    ret, frame = cap.read()
+        
+    retval, buffer = cv2.imencode('.jpg', frame)
+    jpg_as_text = base64.b64encode(buffer).decode('utf-8')
+
+    # Create a dictionary with a single key-value pair containing the byte string
+    live_stream = {"live_stream": jpg_as_text}
+
+    # Store the `live_stream` dictionary in the database
+    db.child("Live_Stream").set(live_stream)
+
+    
     try:
-        sleep(0.5)
+        sleep(0.2)
         distance = ultrasonicRead(ultrasonic)
         print(distance, "cm")
-        ret, frame = cap.read()
+               
         if distance <= 50:
             filename = "images/{}.jpg".format(int(time.time()))                                       
             cv2.imwrite(filename,frame)                              
@@ -49,6 +61,11 @@ while True:
             results = db.child("Motion").set(Motion)
         else:
             control_buzzer(motion["Alarm"])
+            Motion={
+                "Detect" : 0,
+                "Alarm" : 0
+                }
+            results = db.child("Motion").set(Motion)
            
     except KeyboardInterrupt :
         control_buzzer(motion["Alarm"])
